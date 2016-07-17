@@ -1,5 +1,6 @@
 # BitcoinPaymentURISwift
 
+[![Build Status](https://travis-ci.org/SandroMachado/BitcoinPaymentURISwift.svg?branch=master)](https://travis-ci.org/SandroMachado/BitcoinPaymentURISwift)
 [![Carthage Compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 
 BitcoinPaymentURISwift is an open source library to handle the Bitcoin payment URI based on the [BIT 21](https://github.com/bitcoin/bips/blob/master/bip-0021.mediawiki). The purpose of this library is to provide a simpler way to the developers to integrate in their applications support for this URI Scheme to easily make payments.
