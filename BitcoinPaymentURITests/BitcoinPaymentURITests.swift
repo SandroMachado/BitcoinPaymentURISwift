@@ -100,7 +100,7 @@ class BitcoinPaymentURITests: XCTestCase {
         XCTAssertEqual(bpuri.parameters?["foo"]?.required, false, "Failed: Wrong value.")
         XCTAssertEqual(bpuri.parameters?["fiz"]?.value, "biz", "Failed: Wrong value.")
         XCTAssertEqual(bpuri.parameters?["fiz"]?.required, true, "Failed: Wrong value.")
-        XCTAssertEqual(bpuri.uri, "bitcoin:175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W?label=Luke-Jr&foo=bar&amount=50.0&message=Donation%20for%20project%20xyz&req-fiz=biz", "Failed: Wrong value.")
+        XCTAssertEqual(bpuri.uri, "bitcoin:175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W?foo=bar&message=Donation%20for%20project%20xyz&req-fiz=biz&label=Luke-Jr&amount=50.0", "Failed: Wrong value.")
     }
     
 }
