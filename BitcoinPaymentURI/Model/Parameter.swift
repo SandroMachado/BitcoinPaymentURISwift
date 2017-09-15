@@ -9,13 +9,13 @@
 import Foundation
 
 /// Parameter model.
-public class Parameter {
+open class Parameter {
     
     /// The paramenter value.
-    public private(set) var value: String
+    open fileprivate(set) var value: String
     
     /// A boolean indicating if the parameter is required.
-    public private(set) var required: Bool
+    open fileprivate(set) var required: Bool
 
     /**
       Constructor.
