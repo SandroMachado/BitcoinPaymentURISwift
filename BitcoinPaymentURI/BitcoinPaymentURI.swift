@@ -9,24 +9,24 @@
 import Foundation
 
 /// The Bitcoin Payment URI.
-public class BitcoinPaymentURI: BitcoinPaymentURIProtocol {
+open class BitcoinPaymentURI: BitcoinPaymentURIProtocol {
     
     /// Closure to do the builder.
     typealias buildBitcoinPaymentURIClosure = (BitcoinPaymentURI) -> Void
     
-    private static let SCHEME = "bitcoin:"
-    private static let PARAMETER_AMOUNT = "amount"
-    private static let PARAMETER_LABEL = "label"
-    private static let PARAMETER_MESSAGE = "message"
-    private static let PARAMETER_REQUIRED_PREFIX = "req-"
+    fileprivate static let SCHEME = "bitcoin:"
+    fileprivate static let PARAMETER_AMOUNT = "amount"
+    fileprivate static let PARAMETER_LABEL = "label"
+    fileprivate static let PARAMETER_MESSAGE = "message"
+    fileprivate static let PARAMETER_REQUIRED_PREFIX = "req-"
 
-    private var allParameters: [String: Parameter]?
+    fileprivate var allParameters: [String: Parameter]?
 
     /// The address.
-    public var address: String?
+    open var address: String?
     
     /// The amount.
-    public var amount: Double? {
+    open var amount: Double? {
         set(newValue) {
             guard let newValue = newValue else {
                 return
@@ -36,7 +36,7 @@ public class BitcoinPaymentURI: BitcoinPaymentURIProtocol {
         }
         
         get {
-            guard let parameters = self.allParameters, amount = parameters[BitcoinPaymentURI.PARAMETER_AMOUNT]?.value else {
+            guard let parameters = self.allParameters, let amount = parameters[BitcoinPaymentURI.PARAMETER_AMOUNT]?.value else {
                 return nil
             }
             
@@ -45,7 +45,7 @@ public class BitcoinPaymentURI: BitcoinPaymentURIProtocol {
     }
     
     /// The label.
-    public var label: String? {
+    open var label: String? {
         set(newValue) {
             guard let newValue = newValue else {
                 return
@@ -55,7 +55,7 @@ public class BitcoinPaymentURI: BitcoinPaymentURIProtocol {
         }
         
         get {
-            guard let parameters = self.allParameters, label = parameters[BitcoinPaymentURI.PARAMETER_LABEL]?.value else {
+            guard let parameters = self.allParameters, let label = parameters[BitcoinPaymentURI.PARAMETER_LABEL]?.value else {
                 return nil
             }
             
@@ -64,7 +64,7 @@ public class BitcoinPaymentURI: BitcoinPaymentURIProtocol {
     }
     
     /// The message.
-    public var message: String? {
+    open var message: String? {
         set(newValue) {
             guard let newValue = newValue else {
                 return
@@ -74,7 +74,7 @@ public class BitcoinPaymentURI: BitcoinPaymentURIProtocol {
         }
 
         get {
-            guard let parameters = self.allParameters, label = parameters[BitcoinPaymentURI.PARAMETER_MESSAGE]?.value else {
+            guard let parameters = self.allParameters, let label = parameters[BitcoinPaymentURI.PARAMETER_MESSAGE]?.value else {
                 return nil
             }
             
@@ -83,11 +83,11 @@ public class BitcoinPaymentURI: BitcoinPaymentURIProtocol {
     }
     
     /// The parameters.
-    public var parameters: [String: Parameter]? {
+    open var parameters: [String: Parameter]? {
         set(newValue) {
             var newParameters: [String: Parameter] = [:]
 
-            guard let allParameters = self.allParameters, newValue = newValue else {
+            guard let allParameters = self.allParameters, let newValue = newValue else {
                 return
             }
             
@@ -107,20 +107,20 @@ public class BitcoinPaymentURI: BitcoinPaymentURIProtocol {
                 return nil
             }
             
-            parametersFiltered.removeValueForKey(BitcoinPaymentURI.PARAMETER_AMOUNT)
-            parametersFiltered.removeValueForKey(BitcoinPaymentURI.PARAMETER_LABEL)
-            parametersFiltered.removeValueForKey(BitcoinPaymentURI.PARAMETER_MESSAGE)
+            parametersFiltered.removeValue(forKey: BitcoinPaymentURI.PARAMETER_AMOUNT)
+            parametersFiltered.removeValue(forKey: BitcoinPaymentURI.PARAMETER_LABEL)
+            parametersFiltered.removeValue(forKey: BitcoinPaymentURI.PARAMETER_MESSAGE)
             
             return parametersFiltered
         }
     }
     
     // The uri.
-    public var uri: String? {
+    open var uri: String? {
         get {
-            let urlComponents = NSURLComponents()
-            urlComponents.scheme = BitcoinPaymentURI.SCHEME.stringByReplacingOccurrencesOfString(":", withString: "");
-            urlComponents.path = self.address;
+            var urlComponents = URLComponents()
+            urlComponents.scheme = BitcoinPaymentURI.SCHEME.replacingOccurrences(of: ":", with: "");
+            urlComponents.path = self.address!;
             urlComponents.queryItems = []
             
             guard let allParameters = self.allParameters else {
@@ -129,12 +129,12 @@ public class BitcoinPaymentURI: BitcoinPaymentURIProtocol {
             
             for (key, value) in allParameters {
                 if (value.required) {
-                    urlComponents.queryItems?.append(NSURLQueryItem(name: "\(BitcoinPaymentURI.PARAMETER_REQUIRED_PREFIX)\(key)", value: value.value))
+                    urlComponents.queryItems?.append(URLQueryItem(name: "\(BitcoinPaymentURI.PARAMETER_REQUIRED_PREFIX)\(key)", value: value.value))
                     
                     continue
                 }
                 
-                urlComponents.queryItems?.append(NSURLQueryItem(name: key, value: value.value))
+                urlComponents.queryItems?.append(URLQueryItem(name: key, value: value.value))
             }
             
             return urlComponents.string
@@ -159,17 +159,17 @@ public class BitcoinPaymentURI: BitcoinPaymentURIProtocol {
      
       - returns: a BitcoinPaymentURI.
     */
-    public static func parse(bitcoinPaymentURI: String) -> BitcoinPaymentURI? {
-        let schemeRange = Range<String.Index>(bitcoinPaymentURI.startIndex.advancedBy(0)..<bitcoinPaymentURI.startIndex.advancedBy(SCHEME.characters.count))
-        let paramReqRange = Range<String.Index>(bitcoinPaymentURI.startIndex.advancedBy(0)..<bitcoinPaymentURI.startIndex.advancedBy(PARAMETER_REQUIRED_PREFIX.characters.count))
+    open static func parse(_ bitcoinPaymentURI: String) -> BitcoinPaymentURI? {
+        let schemeRange = Range<String.Index>(bitcoinPaymentURI.characters.index(bitcoinPaymentURI.startIndex, offsetBy: 0)..<bitcoinPaymentURI.characters.index(bitcoinPaymentURI.startIndex, offsetBy: SCHEME.characters.count))
+        let paramReqRange = Range<String.Index>(bitcoinPaymentURI.characters.index(bitcoinPaymentURI.startIndex, offsetBy: 0)..<bitcoinPaymentURI.characters.index(bitcoinPaymentURI.startIndex, offsetBy: PARAMETER_REQUIRED_PREFIX.characters.count))
 
-        guard let _ = bitcoinPaymentURI.rangeOfString(SCHEME, options: NSStringCompareOptions.CaseInsensitiveSearch, range: schemeRange) else {
+        guard let _ = bitcoinPaymentURI.range(of: SCHEME, options: NSString.CompareOptions.caseInsensitive, range: schemeRange) else {
             return nil
         }
         
-        let urlComponents = NSURLComponents(string: String(bitcoinPaymentURI))
+        let urlComponents = URLComponents(string: String(bitcoinPaymentURI))
         
-        guard let address = urlComponents?.path where !address.isEmpty else {
+        guard let address = urlComponents?.path, !address.isEmpty else {
             return nil
         }
         
@@ -185,11 +185,11 @@ public class BitcoinPaymentURI: BitcoinPaymentURIProtocol {
                     
                     var required: Bool = true
                     
-                    if (queryItem.name.characters.count <= PARAMETER_REQUIRED_PREFIX.characters.count || queryItem.name.rangeOfString(PARAMETER_REQUIRED_PREFIX, options: NSStringCompareOptions.CaseInsensitiveSearch, range: paramReqRange) == nil) {
+                    if (queryItem.name.characters.count <= PARAMETER_REQUIRED_PREFIX.characters.count || queryItem.name.range(of: PARAMETER_REQUIRED_PREFIX, options: NSString.CompareOptions.caseInsensitive, range: paramReqRange) == nil) {
                         required = false
                     }
                     
-                    newParameters[queryItem.name.stringByReplacingOccurrencesOfString(PARAMETER_REQUIRED_PREFIX, withString: "")] = Parameter(value: value, required: required)
+                    newParameters[queryItem.name.replacingOccurrences(of: PARAMETER_REQUIRED_PREFIX, with: "")] = Parameter(value: value, required: required)
                 }
             }
             
